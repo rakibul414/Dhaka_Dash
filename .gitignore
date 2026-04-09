@@ -1,0 +1,14 @@
+# Build artifacts
+*.exe
+*.o
+*.obj
+
+# Runtime copies
+libfreeglut.dll
+
+# Temp/download artifacts
+.tmp_extract/
+*.pkg.tar.zst
+
+# VS Code noise
+.vscode/*.log

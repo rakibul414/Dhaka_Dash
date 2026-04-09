@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and Run DhakaDash",
+            "type": "shell",
+            "command": "g++ -std=c++17 -Iinclude -Ithird_party/freeglut/include src/main.cpp src/Game.cpp src/Player.cpp src/ObstacleManager.cpp src/Renderer.cpp -Lthird_party/freeglut/lib -o DhakaDash.exe -lfreeglut -lopengl32 -lglu32 -lwinmm; if ($?) { if (Test-Path third_party/freeglut/bin/freeglut.dll) { Copy-Item third_party/freeglut/bin/freeglut.dll . -Force }; if (Test-Path third_party/freeglut/bin/libfreeglut.dll) { Copy-Item third_party/freeglut/bin/libfreeglut.dll . -Force }; start DhakaDash.exe }",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build and Run DhakaDash (Single File)",
+            "type": "shell",
+            "command": "g++ -std=c++17 -Iinclude -Ithird_party/freeglut/include main_single_file.cpp -Lthird_party/freeglut/lib -o DhakaDashSingle.exe -lfreeglut -lopengl32 -lglu32 -lwinmm; if ($?) { if (Test-Path third_party/freeglut/bin/freeglut.dll) { Copy-Item third_party/freeglut/bin/freeglut.dll . -Force }; if (Test-Path third_party/freeglut/bin/libfreeglut.dll) { Copy-Item third_party/freeglut/bin/libfreeglut.dll . -Force }; start DhakaDashSingle.exe }",
+            "group": "test",
+            "problemMatcher": []
+        }
+    ]
+}
