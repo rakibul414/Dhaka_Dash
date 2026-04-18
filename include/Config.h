@@ -1,6 +1,15 @@
 #pragma once
 
 namespace cfg {
+    enum DifficultyPreset {
+        PRESET_CASUAL = 0,
+        PRESET_COMPETITIVE,
+        PRESET_INSANE
+    };
+
+    // Runtime default. Player can override from the opening screen.
+    constexpr DifficultyPreset defaultDifficultyPreset = PRESET_CASUAL;
+
     constexpr int windowWidth = 1280;
     constexpr int windowHeight = 720;
 
