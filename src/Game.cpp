@@ -6,11 +6,20 @@
 #include "Config.h"
 
 namespace {
-constexpr const char* kHighScoreDbPath = "dhaka_dash_high_score.db";
+const char* getHighScoreDbPath(int difficulty) {
+    static const char* paths[3] = {
+        "dhaka_dash_high_score_casual.db",
+        "dhaka_dash_high_score_competitive.db",
+        "dhaka_dash_high_score_insane.db"
+    };
+    if (difficulty < 0 || difficulty > 2) difficulty = 0;
+    return paths[difficulty];
+}
 }
 
-int Game::loadHighScoreFromLocalDb() const {
-    std::ifstream db(kHighScoreDbPath);
+int Game::loadHighScoreFromLocalDb(int difficulty) const {
+    const char* dbPath = getHighScoreDbPath(difficulty);
+    std::ifstream db(dbPath);
     int value = 0;
     if (!(db >> value)) {
         return 0;
@@ -18,8 +27,9 @@ int Game::loadHighScoreFromLocalDb() const {
     return (value < 0) ? 0 : value;
 }
 
-void Game::saveHighScoreToLocalDb(int value) const {
-    std::ofstream db(kHighScoreDbPath, std::ios::trunc);
+void Game::saveHighScoreToLocalDb(int difficulty, int value) const {
+    const char* dbPath = getHighScoreDbPath(difficulty);
+    std::ofstream db(dbPath, std::ios::trunc);
     if (!db.is_open()) {
         return;
     }
@@ -30,24 +40,29 @@ void Game::updateHighScoreIfNeeded() {
     const int finalScore = static_cast<int>(score_);
     if (finalScore > highScore_) {
         highScore_ = finalScore;
-        saveHighScoreToLocalDb(highScore_);
-        std::cout << "New High Score: " << highScore_ << "\n";
+        highScores_[currentDifficulty_] = highScore_;
+        saveHighScoreToLocalDb(currentDifficulty_, highScore_);
+        const char* modeNames[] = {"CASUAL", "COMPETITIVE", "INSANE"};
+        std::cout << "New " << modeNames[currentDifficulty_] << " High Score: " << highScore_ << "\n";
     }
 }
 
 void Game::setDifficultyPreset(int preset) {
     if (preset < cfg::PRESET_CASUAL || preset > cfg::PRESET_INSANE) {
-        obstacleManager_.setDifficultyPreset(cfg::defaultDifficultyPreset);
-        return;
+        preset = cfg::defaultDifficultyPreset;
     }
+    currentDifficulty_ = preset;
     obstacleManager_.setDifficultyPreset(static_cast<cfg::DifficultyPreset>(preset));
 }
 
 void Game::reset() {
-    if (!highScoreLoaded_) {
-        highScore_ = loadHighScoreFromLocalDb();
-        highScoreLoaded_ = true;
+    if (!highScoresLoaded_) {
+        for (int i = 0; i < 3; ++i) {
+            highScores_[i] = loadHighScoreFromLocalDb(i);
+        }
+        highScoresLoaded_ = true;
     }
+    highScore_ = highScores_[currentDifficulty_];
 
     player_.reset();
     obstacleManager_.reset();

@@ -18,10 +18,11 @@ public:
     bool isGameOver() const { return gameOver_; }
     float score() const { return score_; }
     int highScore() const { return highScore_; }
+    int currentDifficulty() const { return currentDifficulty_; }
 
 private:
-    int loadHighScoreFromLocalDb() const;
-    void saveHighScoreToLocalDb(int value) const;
+    int loadHighScoreFromLocalDb(int difficulty) const;
+    void saveHighScoreToLocalDb(int difficulty, int value) const;
     void updateHighScoreIfNeeded();
     bool collidesWithAnyObstacle() const;
 
@@ -32,5 +33,7 @@ private:
     float score_ = 0.0f;
     float elapsedSeconds_ = 0.0f;
     int highScore_ = 0;
-    bool highScoreLoaded_ = false;
+    int highScores_[3] = {0, 0, 0};
+    int currentDifficulty_ = 0;
+    bool highScoresLoaded_ = false;
 };
