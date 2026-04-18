@@ -35,8 +35,11 @@ void Player::update(float dt) {
 }
 
 AABB Player::bounds() const {
+    const float mercyWidth = cfg::playerWidth * 0.8f;
+    const float mercyDepth = cfg::playerDepth * 0.82f;
+
     AABB box;
-    box.min = {xPos_ - cfg::playerWidth * 0.5f, 0.0f, cfg::playerZ - cfg::playerDepth * 0.5f};
-    box.max = {xPos_ + cfg::playerWidth * 0.5f, cfg::playerHeight, cfg::playerZ + cfg::playerDepth * 0.5f};
+    box.min = {xPos_ - mercyWidth * 0.5f, 0.0f, cfg::playerZ - mercyDepth * 0.5f};
+    box.max = {xPos_ + mercyWidth * 0.5f, cfg::playerHeight, cfg::playerZ + mercyDepth * 0.5f};
     return box;
 }
